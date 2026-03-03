@@ -2,15 +2,27 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property-read int $id
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property string $nickname
+ * @property string $gender
+ * @property Carbon $birthday
+ * @property string $best_friend_name
+ * @property int $user_type_id
+ * @property UserType $userType
+ */
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
 
     /**
@@ -33,6 +45,11 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function userType(): HasOne
+    {
+        return $this->hasOne(UserType::class, 'id', 'user_type_id');
+    }
 
     /**
      * Get the attributes that should be cast.
