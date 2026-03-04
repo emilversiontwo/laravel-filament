@@ -8,26 +8,40 @@ use App\Http\Requests\Api\v1\Auth\LoginAuthRequest;
 use App\Http\Requests\Api\v1\Auth\LogoutAuthRequest;
 use App\Http\Requests\Api\v1\Auth\RegistrationAuthRequest;
 use App\Http\Resources\Api\v1\Auth\AuthResource;
+use App\Services\Auth\Dto\StoreTokenAuthDto;
 use App\Services\Auth\Dto\UserIdAuthDto;
 use App\Services\Auth\Service\AuthService;
+use App\Services\User\Dto\StoreUserDto;
+use App\Services\User\Service\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response as ResponseCode;
 
 class AuthController extends Controller
 {
     public function __construct(
-        private readonly AuthService $authService
+        private readonly AuthService $authService,
+        private readonly UserService $userService,
     )
     {
     }
 
     public function registration(RegistrationAuthRequest $request)
     {
-        $dto = $request->toDto();
+        $data = $request->validated();
 
-        $token = $this->authService->registration($dto);
+        $dto = new StoreUserDto($data);
+
+        $user = $this->userService->store($dto);
+
+        $dto = new StoreTokenAuthDto([
+            'user_id' => $user->id,
+            'token_name' => $request->device_name ?? $request->userAgent() ?? Str::random(20),
+        ]);
+
+        $token = $this->authService->storeToken($dto);
 
         return response()->json(data: [
             'type' => 'Bearer',

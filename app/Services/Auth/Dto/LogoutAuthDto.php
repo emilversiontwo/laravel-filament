@@ -9,7 +9,6 @@ use App\Models\User;
 class LogoutAuthDto extends Dto
 {
     public ?int $id = null;
-    public ?string $token = null;
 
     public User $user;
 }

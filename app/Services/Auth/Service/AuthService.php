@@ -3,14 +3,11 @@ declare(strict_types=1);
 
 namespace App\Services\Auth\Service;
 
-use App\Enums\User\UserGenderEnum;
 use App\Models\User;
-use App\Models\UserType;
 use App\Services\Auth\Dto\LoginAuthDto;
 use App\Services\Auth\Dto\LogoutAuthDto;
-use App\Services\Auth\Dto\RegistrationAuthDto;
+use App\Services\Auth\Dto\StoreTokenAuthDto;
 use App\Services\Auth\Dto\UserIdAuthDto;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -20,25 +17,12 @@ class AuthService
 
     /**
      * Register new user and set role "user"
-     * @param RegistrationAuthDto $dto
+     * @param StoreTokenAuthDto $dto
      * @return string
      */
-    public function registration(RegistrationAuthDto $dto): string
+    public function storeToken(StoreTokenAuthDto $dto): string
     {
-        $userType = UserType::query()->findOrFail($dto->user_type_id);
-
-        $user = new User();
-
-        $user->email = $dto->email;
-        $user->password = Hash::make($dto->password);
-        $user->name = $dto->name;
-        $user->nickname = $dto->nickname;
-        $user->gender = UserGenderEnum::tryFromString($dto->gender)->getValue();
-        $user->birthday = Carbon::parse($dto->birthday);
-        $user->best_friend_name = $dto->best_friend_name;
-        $user->user_type_id = $userType->id;
-
-        $user->save();
+        $user = User::query()->findOrFail($dto->user_id);
 
         return $user->createToken($dto->token_name)->plainTextToken;
     }

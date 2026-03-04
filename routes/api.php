@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\v1\Auth\AuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\v1\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1'], function () {
@@ -23,4 +23,24 @@ Route::group(['prefix' => 'v1'], function () {
         route::get('/sessions', [AuthController::class, 'getSessions'])
             ->name('api.v1.sessions');
     });
+
+    Route::group(['prefix' => 'users', 'middleware' => 'auth:sanctum'], function () {
+        Route::get('/', [UserController::class, 'index'])
+            ->name('api.v1.users.index');
+
+        Route::get('/{user}', [UserController::class, 'show'])
+            ->name('api.v1.users.show');
+
+        Route::delete('/{user}', [UserController::class, 'destroy'])
+            ->name('api.v1.users.destroy');
+
+        Route::patch('/{user}', [UserController::class, 'update'])
+            ->name('api.v1.users.update');
+    });
+
+    Route::get('/current', [UserController::class, 'current'])
+        ->name('api.v1.current')
+        ->middleware([
+            'auth:sanctum',
+        ]);
 });

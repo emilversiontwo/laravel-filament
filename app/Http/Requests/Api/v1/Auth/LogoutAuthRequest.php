@@ -12,7 +12,6 @@ class LogoutAuthRequest extends FormRequest
     {
         return [
             'id' => ['sometimes', 'integer'],
-            'token' => ['sometimes', 'string'],
         ];
     }
 
