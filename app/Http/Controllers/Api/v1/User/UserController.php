@@ -36,7 +36,7 @@ class UserController extends Controller
     public function update(User $user, UpdateUserRequest $request): JsonResponse
     {
         if ($request->user()->id !== $user->id) {
-            throw new AppLogicException('Insufficient permissions', ResponseCode::HTTP_FORBIDDEN);
+            throw AppLogicException::forbidden();
         }
 
         $dto = $request->toDto($user->id);
@@ -52,7 +52,7 @@ class UserController extends Controller
     public function destroy(User $user, Request $request): Response
     {
         if ($request->user()->id !== $user->id) {
-            throw new AppLogicException('Insufficient permissions', ResponseCode::HTTP_FORBIDDEN);
+            throw AppLogicException::forbidden();
         }
 
         $dto = new UserIdDto([
@@ -70,7 +70,7 @@ class UserController extends Controller
     public function show(User $user, Request $request): JsonResponse
     {
         if ($request->user()->id !== $user->id) {
-            throw new AppLogicException('Insufficient permissions', ResponseCode::HTTP_FORBIDDEN);
+            throw AppLogicException::forbidden();
         }
 
         $dto = new UserIdDto([
@@ -82,7 +82,7 @@ class UserController extends Controller
         return UserResource::make($user)->response()->setStatusCode(ResponseCode::HTTP_OK);
     }
 
-    public function current(Request $request)
+    public function current(Request $request): JsonResponse
     {
         $user = $request->user();
 

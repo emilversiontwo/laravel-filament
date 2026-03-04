@@ -89,7 +89,7 @@ class UserService
 
         if ($dto->user_type_id) {
             $userType = UserType::query()->findOrFail($dto->user_type_id);
-            $user->user_type_id = $userType;
+            $user->user_type_id = $userType->id;
         }
 
         $user->save();

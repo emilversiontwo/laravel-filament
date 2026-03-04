@@ -28,7 +28,7 @@ class AuthController extends Controller
     {
     }
 
-    public function registration(RegistrationAuthRequest $request)
+    public function registration(RegistrationAuthRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -72,7 +72,7 @@ class AuthController extends Controller
 
     }
 
-    public function logoutAll(Request $request)
+    public function logoutAll(Request $request): Response
     {
         $dto = new UserIdAuthDto([
             'user_id' => $request->user()->id,
@@ -83,7 +83,7 @@ class AuthController extends Controller
         return response()->noContent()->setStatusCode(ResponseCode::HTTP_NO_CONTENT);
     }
 
-    public function getSessions(Request $request)
+    public function getSessions(Request $request): JsonResponse
     {
         $dto = new UserIdAuthDto([
             'user_id' => $request->user()->id,

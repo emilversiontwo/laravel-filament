@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\v1\Auth\AuthController;
+use App\Http\Controllers\Api\v1\Friendship\FriendshipController;
 use App\Http\Controllers\Api\v1\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,23 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::patch('/{user}', [UserController::class, 'update'])
             ->name('api.v1.users.update');
+    });
+
+    Route::group(['prefix' => 'friends', 'middleware' => 'auth:sanctum'], function () {
+        Route::get('/', [FriendshipController::class, 'index'])
+            ->name('api.v1.friends.index');
+
+        Route::get('/{friendship}', [FriendshipController::class, 'show'])
+            ->name('api.v1.friends.show');
+
+        Route::delete('/{friendship}', [FriendshipController::class, 'destroy'])
+            ->name('api.v1.friends.destroy');
+
+        Route::patch('/{friendship}', [FriendshipController::class, 'update'])
+            ->name('api.v1.friends.update');
+
+        Route::post('/', [FriendshipController::class, 'store'])
+            ->name('api.v1.friends.store');
     });
 
     Route::get('/current', [UserController::class, 'current'])
