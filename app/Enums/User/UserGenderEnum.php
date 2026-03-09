@@ -21,6 +21,4 @@ enum UserGenderEnum: string
     {
         return $this->value;
     }
-
-
 }

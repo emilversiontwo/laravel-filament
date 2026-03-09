@@ -1,8 +1,12 @@
 <?php
 
 use App\Http\Controllers\Api\v1\Auth\AuthController;
+use App\Http\Controllers\Api\v1\Chat\ChatController;
+use App\Http\Controllers\Api\v1\Chat\ChatParticipantController;
+use App\Http\Controllers\Api\v1\Chat\MessageController;
 use App\Http\Controllers\Api\v1\Friendship\FriendshipController;
 use App\Http\Controllers\Api\v1\User\UserController;
+use App\Models\Chat\ChatParticipant;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1'], function () {
@@ -54,6 +58,52 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::post('/', [FriendshipController::class, 'store'])
             ->name('api.v1.friends.store');
+    });
+
+    Route::group(['prefix' => 'chats', 'middleware' => 'auth:sanctum'], function () {
+        Route::get('/', [ChatController::class, 'index'])
+            ->name('api.v1.chats.index');
+
+        Route::get('/{chat}', [ChatController::class, 'show'])
+            ->name('api.v1.chats.show');
+
+        Route::delete('/{chat}', [ChatController::class, 'destroy'])
+            ->name('api.v1.chats.destroy');
+
+        Route::patch('/{chat}', [ChatController::class, 'update'])
+            ->name('api.v1.chats.update');
+
+        Route::post('/', [ChatController::class, 'store'])
+            ->name('api.v1.chats.store');
+
+        Route::group(['prefix' => '{chat}/participants', 'middleware' => 'auth:sanctum'], function () {
+            Route::post('/', [ChatParticipantController::class, 'store'])
+                ->name('api.v1.chats.participants.store');
+
+            Route::delete('/{chat_participant_id}', [ChatParticipantController::class, 'destroy'])
+                ->name('api.v1.chats.participants.destroy');
+
+            Route::patch('/{chat_participant_id}', [ChatParticipantController::class, 'update'])
+                ->name('api.v1.chats.participants.update');
+        });
+
+        Route::group(['prefix' => '{chat}/messages', 'middleware' => 'auth:sanctum'], function () {
+            Route::post('/', [MessageController::class, 'store'])
+                ->name('api.v1.chat.messages.store');
+
+            Route::delete('/{message_id}', [MessageController::class, 'destroy'])
+                ->name('api.v1.chat.messages.destroy');
+
+            Route::patch('/{message_id}', [MessageController::class, 'update'])
+                ->name('api.v1.chat.messages.update');
+
+            Route::get('/{message_id}', [MessageController::class, 'show'])
+                ->name('api.v1.chat.messages.show');
+
+            Route::get('/', [MessageController::class, 'index'])
+                ->name('api.v1.chat.messages.index');
+        });
+
     });
 
     Route::get('/current', [UserController::class, 'current'])

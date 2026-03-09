@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -47,9 +48,9 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function userType(): HasOne
+    public function userType(): BelongsTo
     {
-        return $this->hasOne(UserType::class, 'id', 'user_type_id');
+        return $this->belongsTo(UserType::class, 'id', 'user_type_id');
     }
 
     /**
