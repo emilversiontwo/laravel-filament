@@ -2,15 +2,30 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property-read int $id
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property string $nickname
+ * @property string $gender
+ * @property Carbon $birthday
+ * @property string $best_friend_name
+ * @property int $user_type_id
+ * @property UserType $userType
+ */
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -33,6 +48,11 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function userType(): BelongsTo
+    {
+        return $this->belongsTo(UserType::class, 'user_type_id', 'id');
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -44,5 +64,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function friendships(): HasMany
+    {
+        return $this->hasMany(Friendship::class, 'user_id', 'id');
     }
 }
