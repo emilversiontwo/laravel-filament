@@ -1,0 +1,790 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Laravel Filament API",
+        "description": "API для управления пользователями, друзьями и чатами",
+        "version": "1.0.0",
+        "contact": {
+            "name": "API Support"
+        }
+    },
+    "servers": [
+        {
+            "url": "{base_url}",
+            "variables": {
+                "base_url": {
+                    "default": "http://localhost",
+                    "description": "Базовый URL сервера"
+                }
+            }
+        }
+    ],
+    "paths": {
+        "/api/v1/register": {
+            "post": {
+                "tags": ["Auth"],
+                "summary": "Регистрация пользователя",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {"type": "string", "default": "JohnDoe"},
+                                    "email": {"type": "string", "format": "email", "default": "someemail@email.com"},
+                                    "nickname": {"type": "string", "default": "JohnDoe"},
+                                    "gender": {"type": "string", "default": "male"},
+                                    "birthday": {"type": "string", "default": "13-03-2004"},
+                                    "best_friend_name": {"type": "string", "default": "BestFriend"},
+                                    "user_type_id": {"type": "integer", "default": 1},
+                                    "password": {"type": "string", "format": "password", "default": "password"},
+                                    "password_confirmation": {"type": "string", "format": "password", "default": "password"}
+                                },
+                                "required": ["email", "password"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешная регистрация",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {"type": "string"}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/login": {
+            "post": {
+                "tags": ["Auth"],
+                "summary": "Вход пользователя",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {"type": "string", "format": "email", "default": "someemail@email.com"},
+                                    "password": {"type": "string", "format": "password", "default": "password"}
+                                },
+                                "required": ["email", "password"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешный вход",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {"type": "string"}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/logout": {
+            "post": {
+                "tags": ["Auth"],
+                "summary": "Выход пользователя",
+                "security": [{"bearerAuth": []}],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {"type": "integer", "default": 1}
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {"description": "Успешный выход"}
+                }
+            }
+        },
+        "/api/v1/logout-all": {
+            "post": {
+                "tags": ["Auth"],
+                "summary": "Выход со всех устройств",
+                "security": [{"bearerAuth": []}],
+                "responses": {
+                    "200": {"description": "Успешный выход со всех устройств"}
+                }
+            }
+        },
+        "/api/v1/sessions": {
+            "get": {
+                "tags": ["Auth"],
+                "summary": "Получить активные сессии",
+                "security": [{"bearerAuth": []}],
+                "responses": {
+                    "200": {"description": "Список сессий"}
+                }
+            }
+        },
+        "/api/v1/users/": {
+            "get": {
+                "tags": ["Users"],
+                "summary": "Список пользователей",
+                "security": [{"bearerAuth": []}],
+                "responses": {
+                    "200": {"description": "Список пользователей"}
+                }
+            }
+        },
+        "/api/v1/users/{user_id}": {
+            "get": {
+                "tags": ["Users"],
+                "summary": "Получить пользователя",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 1}
+                    }
+                ],
+                "responses": {
+                    "200": {"description": "Данные пользователя"}
+                }
+            },
+            "patch": {
+                "tags": ["Users"],
+                "summary": "Обновить пользователя",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 1}
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {"type": "string", "default": "JohnDoe"},
+                                    "email": {"type": "string", "format": "email", "default": "john@example.com"},
+                                    "nickname": {"type": "string", "default": "JohnDoe"},
+                                    "gender": {"type": "string", "default": "female"},
+                                    "birthday": {"type": "string", "default": "13-03-2004"},
+                                    "best_friend_name": {"type": "string", "default": "BestFriend"},
+                                    "user_type_id": {"type": "integer", "default": 1},
+                                    "password": {"type": "string", "default": "password"}
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {"description": "Пользователь обновлен"}
+                }
+            },
+            "delete": {
+                "tags": ["Users"],
+                "summary": "Удалить пользователя",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 1}
+                    }
+                ],
+                "responses": {
+                    "200": {"description": "Пользователь удален"}
+                }
+            }
+        },
+        "/api/v1/friends/": {
+            "get": {
+                "tags": ["Friends"],
+                "summary": "Список друзей",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "type_sort",
+                        "in": "query",
+                        "schema": {"type": "string", "enum": ["my"], "default": "my"}
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {"type": "integer", "default": 15}
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {"type": "integer", "default": 1}
+                    }
+                ],
+                "responses": {
+                    "200": {"description": "Список друзей"}
+                }
+            },
+            "post": {
+                "tags": ["Friends"],
+                "summary": "Добавить друга",
+                "security": [{"bearerAuth": []}],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "friend_user_id": {"type": "integer", "default": 7}
+                                },
+                                "required": ["friend_user_id"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {"description": "Друг добавлен"}
+                }
+            }
+        },
+        "/api/v1/friends/{friendship_id}": {
+            "get": {
+                "tags": ["Friends"],
+                "summary": "Получить дружбу",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "friendship_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 1}
+                    }
+                ],
+                "responses": {
+                    "200": {"description": "Данные дружбы"}
+                }
+            },
+            "patch": {
+                "tags": ["Friends"],
+                "summary": "Обновить статус дружбы",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "friendship_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 2}
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "status": {"type": "string", "enum": ["pending", "accepted", "rejected"], "default": "pending"}
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {"description": "Статус обновлен"}
+                }
+            },
+            "delete": {
+                "tags": ["Friends"],
+                "summary": "Удалить дружбу",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "friendship_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 1}
+                    }
+                ],
+                "responses": {
+                    "200": {"description": "Дружба удалена"}
+                }
+            }
+        },
+        "/api/v1/chats/": {
+            "get": {
+                "tags": ["Chats"],
+                "summary": "Список чатов",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "schema": {"type": "string", "enum": ["group", "private"]}
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {"type": "integer", "default": 15}
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {"type": "integer", "default": 1}
+                    },
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "schema": {"type": "string"}
+                    }
+                ],
+                "responses": {
+                    "200": {"description": "Список чатов"}
+                }
+            },
+            "post": {
+                "tags": ["Chats"],
+                "summary": "Создать чат",
+                "security": [{"bearerAuth": []}],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {"type": "string", "enum": ["group", "private"], "default": "group"},
+                                    "title": {"type": "string", "default": "123123123"}
+                                },
+                                "required": ["type"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {"description": "Чат создан"}
+                }
+            }
+        },
+        "/api/v1/chats/{chat_id}": {
+            "get": {
+                "tags": ["Chats"],
+                "summary": "Получить чат",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 1}
+                    }
+                ],
+                "responses": {
+                    "200": {"description": "Данные чата"}
+                }
+            },
+            "patch": {
+                "tags": ["Chats"],
+                "summary": "Обновить чат",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 1}
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {"type": "string", "default": "123123123131321321313123123"}
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {"description": "Чат обновлен"}
+                }
+            },
+            "delete": {
+                "tags": ["Chats"],
+                "summary": "Удалить чат",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 2}
+                    }
+                ],
+                "responses": {
+                    "200": {"description": "Чат удален"}
+                }
+            }
+        },
+        "/api/v1/chats/{chat_id}/participants/": {
+            "post": {
+                "tags": ["Chat Participants"],
+                "summary": "Добавить участника в чат",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 2}
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "user_id": {"type": "integer", "default": 10},
+                                    "role": {"type": "string", "enum": ["member", "admin"], "default": "member"}
+                                },
+                                "required": ["user_id"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {"description": "Участник добавлен"}
+                }
+            }
+        },
+        "/api/v1/chats/{chat_id}/participants/{participant_id}": {
+            "patch": {
+                "tags": ["Chat Participants"],
+                "summary": "Обновить участника",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 1}
+                    },
+                    {
+                        "name": "participant_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 2}
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "role": {"type": "string", "enum": ["member", "admin"], "default": "admin"}
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {"description": "Участник обновлен"}
+                }
+            },
+            "delete": {
+                "tags": ["Chat Participants"],
+                "summary": "Удалить участника",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 1}
+                    },
+                    {
+                        "name": "participant_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 2}
+                    }
+                ],
+                "responses": {
+                    "200": {"description": "Участник удален"}
+                }
+            }
+        },
+        "/api/v1/chats/{chat_id}/messages": {
+            "get": {
+                "tags": ["Messages"],
+                "summary": "Список сообщений",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 3}
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {"type": "integer", "default": 15}
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {"type": "integer", "default": 1}
+                    },
+                    {
+                        "name": "body",
+                        "in": "query",
+                        "schema": {"type": "string"}
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "schema": {"type": "integer"}
+                    }
+                ],
+                "responses": {
+                    "200": {"description": "Список сообщений"}
+                }
+            },
+            "post": {
+                "tags": ["Messages"],
+                "summary": "Отправить сообщение",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 2}
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "parent_id": {"type": "integer", "default": 24},
+                                    "body": {"type": "string", "default": "Hello World"}
+                                },
+                                "required": ["body"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {"description": "Сообщение отправлено"}
+                }
+            }
+        },
+        "/api/v1/chats/{chat_id}/messages/{message_id}": {
+            "get": {
+                "tags": ["Messages"],
+                "summary": "Получить сообщение",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 3}
+                    },
+                    {
+                        "name": "message_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 3}
+                    }
+                ],
+                "responses": {
+                    "200": {"description": "Данные сообщения"}
+                }
+            },
+            "patch": {
+                "tags": ["Messages"],
+                "summary": "Обновить сообщение",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 3}
+                    },
+                    {
+                        "name": "message_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 5}
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "body": {"type": "string", "default": "Updated message text"}
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {"description": "Сообщение обновлено"}
+                }
+            },
+            "delete": {
+                "tags": ["Messages"],
+                "summary": "Удалить сообщение",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 3}
+                    },
+                    {
+                        "name": "message_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {"type": "integer", "default": 3}
+                    }
+                ],
+                "responses": {
+                    "200": {"description": "Сообщение удалено"}
+                }
+            }
+        },
+        "/api/v1/current/": {
+            "get": {
+                "tags": ["Current User"],
+                "summary": "Получить текущего пользователя",
+                "security": [{"bearerAuth": []}],
+                "responses": {
+                    "200": {
+                        "description": "Данные текущего пользователя",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {"type": "integer"}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/recommendations/": {
+            "get": {
+                "tags": ["Recommendations"],
+                "summary": "Получить рекомендации",
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {"type": "integer", "default": 100}
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "schema": {"type": "integer"}
+                    }
+                ],
+                "responses": {
+                    "200": {"description": "Список рекомендаций"}
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "integer"},
+                    "name": {"type": "string"},
+                    "email": {"type": "string", "format": "email"},
+                    "nickname": {"type": "string"},
+                    "gender": {"type": "string"},
+                    "birthday": {"type": "string"},
+                    "user_type_id": {"type": "integer"}
+                }
+            },
+            "Chat": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "integer"},
+                    "type": {"type": "string"},
+                    "title": {"type": "string"}
+                }
+            },
+            "Message": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "integer"},
+                    "body": {"type": "string"},
+                    "parent_id": {"type": "integer"},
+                    "chat_id": {"type": "integer"},
+                    "user_id": {"type": "integer"}
+                }
+            },
+            "Friendship": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "integer"},
+                    "status": {"type": "string"},
+                    "user_id": {"type": "integer"},
+                    "friend_user_id": {"type": "integer"}
+                }
+            }
+        }
+    },
+    "security": [
+        {"bearerAuth": []}
+    ]
+}
