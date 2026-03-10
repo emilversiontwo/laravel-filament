@@ -15,6 +15,11 @@ class ChatPolicy
 
     public function view(User $user, Chat $chat): bool
     {
+        if ($user->is_admin)
+        {
+            return true;
+        }
+
         return $chat->whereHas('chatParticipants', function (Builder $query) use ($chat, $user) {
             $query->where('chat_id', $chat->id);
             $query->where('user_id', $user->id);
@@ -23,16 +28,31 @@ class ChatPolicy
 
     public function update(User $user, Chat $chat): bool
     {
+        if ($user->is_admin)
+        {
+            return true;
+        }
+
         return $this->isChatAdmin($user, $chat);
     }
 
     public function delete(User $user, Chat $chat): bool
     {
+        if ($user->is_admin)
+        {
+            return true;
+        }
+
         return $this->isChatAdmin($user, $chat);
     }
 
     private function isChatAdmin(User $user, Chat $chat): bool
     {
+        if ($user->is_admin)
+        {
+            return true;
+        }
+
         $chatType = ChatTypeEnum::tryFromString($chat->type);
 
         if ($chatType == ChatTypeEnum::GROUP) {

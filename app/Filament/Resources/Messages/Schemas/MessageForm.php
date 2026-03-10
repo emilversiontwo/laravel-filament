@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Filament\Resources\Messages\Schemas;
+
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Schemas\Schema;
+
+class MessageForm
+{
+    public static function configure(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Select::make('chat_id')
+                    ->relationship('chat', 'title')
+                    ->required(),
+                Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->required(),
+                Select::make('parent_id')
+                    ->relationship('parent', 'id'),
+                Textarea::make('body')
+                    ->required()
+                    ->columnSpanFull(),
+            ]);
+    }
+}

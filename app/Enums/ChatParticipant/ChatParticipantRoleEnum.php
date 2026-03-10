@@ -20,4 +20,12 @@ enum ChatParticipantRoleEnum: string
     {
         return $this->value;
     }
+
+    public static function getValues(): array
+    {
+        return [
+            self::ADMIN->value => self::ADMIN->name,
+            self::MEMBER->value => self::MEMBER->name,
+        ];
+    }
 }

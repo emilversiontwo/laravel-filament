@@ -9,6 +9,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property-read int $id
+ * @property int $chat_id
+ * @property int $user_id
+ * @property int|null $parent_id
+ * @property string $body
+ * @property Chat $chat
+ * @property User $user
+ * @property Message $parent
+ */
 #[UsePolicy(MessagePolicy::class)]
 class Message extends Model
 {

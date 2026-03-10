@@ -11,13 +11,23 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ChatParticipantPolicy
 {
-    public function create(User $user, Chat $chat): bool
+    public function create(User $user, ?Chat $chat = null): bool
     {
+        if ($user->is_admin)
+        {
+            return true;
+        }
+
         return $this->isChatAdmin($user, $chat);
     }
 
     public function update(User $user, ChatParticipant $chatParticipant): bool
     {
+        if ($user->is_admin)
+        {
+            return true;
+        }
+
         $chat = $chatParticipant->chat()->first();
 
         return $this->isChatAdmin($user, $chat);
@@ -25,13 +35,23 @@ class ChatParticipantPolicy
 
     public function delete(User $user, ChatParticipant $chatParticipant): bool
     {
+        if ($user->is_admin)
+        {
+            return true;
+        }
+
         $chat = $chatParticipant->chat()->first();
 
         return $this->isChatAdmin($user, $chat) || $user->id === $chatParticipant->user_id;
     }
 
-    private function isChatAdmin(User $user, Chat $chat): bool
+    private function isChatAdmin(User $user, ?Chat $chat = null): bool
     {
+        if ($user->is_admin)
+        {
+            return true;
+        }
+
         $chatType = ChatTypeEnum::tryFromString($chat->type);
 
         if ($chatType == ChatTypeEnum::GROUP){
