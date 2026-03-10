@@ -23,4 +23,13 @@ enum FriendshipStatusEnum: string
     {
         return $this->value;
     }
+
+    public static function getValues(): array
+    {
+        return [
+            self::PENDING->value => self::PENDING->name,
+            self::ACCEPTED->value => self::ACCEPTED->name,
+            self::BLOCKED->value => self::BLOCKED->name,
+        ];
+    }
 }

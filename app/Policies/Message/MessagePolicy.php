@@ -13,36 +13,66 @@ class MessagePolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(User $user, Chat $chat): bool
+    public function viewAny(User $user, ?Chat $chat = null): bool
     {
+        if ($user->is_admin)
+        {
+            return true;
+        }
+
         return $this->isChatHasUser($user, $chat);
     }
 
     public function isChatHasUser(User $user, Chat $chat): bool
     {
+        if ($user->is_admin)
+        {
+            return true;
+        }
+
         return $chat->whereHas('chatParticipants', function (Builder $query) use ($user, $chat) {
             $query->where('user_id', $user->id);
             $query->where('chat_id', $chat->id);
         })->exists();
     }
 
-    public function view(User $user, Message $message, Chat $chat): bool
+    public function view(User $user, Message $message, ?Chat $chat = null): bool
     {
+        if ($user->is_admin)
+        {
+            return true;
+        }
+
         return $this->isChatHasUser($user, $chat);
     }
 
-    public function create(User $user, Chat $chat): bool
+    public function create(User $user, ?Chat $chat = null): bool
     {
+        if ($user->is_admin)
+        {
+            return true;
+        }
+
         return $this->isChatHasUser($user, $chat);
     }
 
-    public function update(User $user, Message $message, Chat $chat): bool
+    public function update(User $user, Message $message, ?Chat $chat = null): bool
     {
+        if ($user->is_admin)
+        {
+            return true;
+        }
+
         return $user->id === $message->user_id && $this->isChatHasUser($user, $chat);
     }
 
-    public function delete(User $user, Message $message, Chat $chat ): bool
+    public function delete(User $user, Message $message, ?Chat $chat = null): bool
     {
+        if ($user->is_admin)
+        {
+            return true;
+        }
+
         return $user->id === $message->user_id || $chat->whereHas('chatParticipants', function (Builder $query) use ($user, $chat) {
                 $query->where('user_id', $user->id);
                 $query->where('chat_id', $chat->id);

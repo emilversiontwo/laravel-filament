@@ -10,7 +10,7 @@ class RecommendationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'limit' => ['sometimes', 'integer', 'min:10'],
+            'limit' => ['sometimes', 'integer', 'min:10', 'max:100'],
             'offset' => ['sometimes', 'integer', 'min:1'],
         ];
     }

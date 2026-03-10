@@ -29,4 +29,12 @@ enum UserGenderEnum: string
             self::FEMALE->value => self::MALE,
         };
     }
+
+    public static function getValues(): array
+    {
+        return [
+            self::MALE->value => self::MALE->name,
+            self::FEMALE->value => self::FEMALE->name,
+        ];
+    }
 }

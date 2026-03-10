@@ -23,6 +23,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property Carbon $birthday
  * @property string $best_friend_name
  * @property int $user_type_id
+ * @property bool $is_admin
  * @property UserType $userType
  */
 class User extends Authenticatable implements FilamentUser
@@ -38,6 +39,12 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'nickname',
+        'gender',
+        'birthday',
+        'user_type_id',
+        'best_friend_name',
+        'is_admin',
     ];
 
     /**

@@ -10,7 +10,7 @@ class StoreMessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'parent_id' => ['nullable', 'exists:messages'],
+            'parent_id' => ['nullable', 'exists:messages,id'],
             'body' => ['required'],
         ];
     }
@@ -26,6 +26,7 @@ class StoreMessageRequest extends FormRequest
 
         return new StoreMessageDto([
             ...$data,
+            'parent_id' => intval($data['parent_id'] ?? null),
             'chat_id' => $chat_id,
             'user_id' => $this->user()->id,
         ]);

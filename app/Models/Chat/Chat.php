@@ -5,11 +5,19 @@ namespace App\Models\Chat;
 use App\Models\User;
 use App\Policies\Chat\ChatPolicy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property-read int $id
+ * @property string $type
+ * @property string $title
+ * @property Collection<ChatParticipant> $chatParticipants
+ * @property Collection<Message> $messages
+ */
 #[UsePolicy(ChatPolicy::class)]
 class Chat extends Model
 {
@@ -17,7 +25,6 @@ class Chat extends Model
 
     protected $fillable = [
         'type',
-        'owner_user_id',
         'title',
     ];
 

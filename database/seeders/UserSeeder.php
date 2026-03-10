@@ -12,6 +12,8 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
+        User::query()->truncate();
+
         $user = new User();
 
         $user->name = 'Admin';
