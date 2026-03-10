@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,7 +25,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property int $user_type_id
  * @property UserType $userType
  */
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable, HasApiTokens;
 
@@ -69,5 +71,10 @@ class User extends Authenticatable
     public function friendships(): HasMany
     {
         return $this->hasMany(Friendship::class, 'user_id', 'id');
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->is_admin === true;
     }
 }
