@@ -5,8 +5,11 @@ use App\Http\Controllers\Api\v1\Chat\ChatController;
 use App\Http\Controllers\Api\v1\Chat\ChatParticipantController;
 use App\Http\Controllers\Api\v1\Chat\MessageController;
 use App\Http\Controllers\Api\v1\Friendship\FriendshipController;
+use App\Http\Controllers\Api\v1\Recommendation\RecommendationController;
 use App\Http\Controllers\Api\v1\User\UserController;
 use App\Models\Chat\ChatParticipant;
+use App\Services\RecommendationService\Dto\RecommendationDto;
+use App\Services\RecommendationService\Service\RecommendationService;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1'], function () {
@@ -103,8 +106,11 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/', [MessageController::class, 'index'])
                 ->name('api.v1.chat.messages.index');
         });
-
     });
+
+    Route::get('/recommendations', [RecommendationController::class, 'getSuggests'])
+        ->middleware('auth:sanctum')
+        ->name('api.v1.recommendations.get');
 
     Route::get('/current', [UserController::class, 'current'])
         ->name('api.v1.current')

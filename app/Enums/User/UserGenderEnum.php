@@ -21,4 +21,12 @@ enum UserGenderEnum: string
     {
         return $this->value;
     }
+
+    public function oppositeGender(): self
+    {
+        return match ($this->value) {
+            self::MALE->value => self::FEMALE,
+            self::FEMALE->value => self::MALE,
+        };
+    }
 }
